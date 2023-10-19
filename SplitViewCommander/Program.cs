@@ -34,8 +34,6 @@ var tableView = new TableView()
 tableView.Table = dt;
 #endregion
 
-string theNow = DateTime.Now.ToString("HH:mm:ss");
-
 var menu = new MenuBar(new MenuBarItem[] {
             new MenuBarItem (
                 "_File", new MenuItem [] {
@@ -56,7 +54,17 @@ var menu = new MenuBar(new MenuBarItem[] {
             }),
         });
 
+var listSource  = new List<string>{ "123", "324", "123", "324", "123", "324", };
+var listView = new ListView(listSource)
+{
+    Width = 100,
+    Height = 100,
+    X = 50,
+    Y = 40,
+};
+listView.AllowsMultipleSelection = true;
 
+win.Add(listView);
 
 // Add both menu and win in a single call
 //Application.Top.Add(menu, win, tableView);
