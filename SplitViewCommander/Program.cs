@@ -1,6 +1,7 @@
 ﻿using SplitViewCommander.Services;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using Terminal.Gui;
 
 SvcUtils utils = new SvcUtils();
@@ -47,7 +48,7 @@ var listSource  = new List<string>{ "123", "324", "123", "324", "123", "324", };
 string currentLeftDir = @"C:\Users\Brian\Desktop";
 string currentRightDir = Directory.GetCurrentDirectory().ToString();
 
-string[] relDirRefs = new string[] { ".", ".." };
+string[] relDirRefs = new string[] { ".." };
 string[] dirFileList = Directory.GetFileSystemEntries(currentLeftDir, "*", SearchOption.TopDirectoryOnly);
 string[] files1 = utils.ConcatArrays(relDirRefs, dirFileList);
 
@@ -69,22 +70,32 @@ void HandleOpenSelectedItem(ListViewItemEventArgs args)
     string filePath = args.Value.ToString();
     bool isDir = utils.IsDirectory(filePath);
 
+    // If dir - navigate into it
     if (isDir)
     {
         if (".." == filePath)
         {
-            currentLeftDir = Directory.GetParent(currentLeftDir).ToString();
+            string? parentDir = Directory.GetParent(currentLeftDir)?.ToString();
+            if (parentDir is not null)
+            {
+                currentLeftDir = parentDir;
+            }
         }
         else
         {
             currentLeftDir = filePath;
         }
     }
+    // if not dir - assuming file and opening it
+    else
+    {
+        ProcessStartInfo startInfo = new ProcessStartInfo() { FileName = filePath, UseShellExecute = true };
+        Process.Start(startInfo);
+    }
 
-    string[] dirsAndFilesAsList        = Directory.EnumerateFileSystemEntries(currentLeftDir).ToArray();
-    string[] entries = Directory.GetFileSystemEntries(currentLeftDir, "*", SearchOption.TopDirectoryOnly);
+    string[] dirsAndFilesAsList = Directory.EnumerateFileSystemEntries(currentLeftDir).ToArray();
     
-    listView.Clear();
+    //listView.Clear();
     listView.SetSource(utils.ConcatArrays(relDirRefs, dirsAndFilesAsList));
 }
 
