@@ -100,6 +100,36 @@ void RightListViewHandleOpenSelectedItem(ListViewItemEventArgs args)
 win.Add(leftListView);
 win.Add(rightListView);
 
+
+
+Button f3Button = new Button(10, 25, "F3 View", false);
+Button f4Button = new Button(25, 25, "F4 Edit", false);
+Button f10Button = new Button(40, 25, "_F10 Quit", false);
+
+win.Add(f3Button);
+win.Add(f4Button);
+win.Add(f10Button);
+
+
+
+StatusBar statusBar = new StatusBar();
+win.Add(statusBar);
+
+
+
+Application.Top.KeyDown += OnKeyDown;
+void OnKeyDown(View.KeyEventEventArgs args)
+{
+    Debug.WriteLine($"{args.KeyEvent.Key} pressed");
+
+    if (args.KeyEvent.Key == Key.F10)
+    {
+        Application.RequestStop();
+    }
+}
+
+
+
 // Add both menu and win in a single call
 //Application.Top.Add(menu, win, tableView);
 Application.Top.Add(menu, win);
