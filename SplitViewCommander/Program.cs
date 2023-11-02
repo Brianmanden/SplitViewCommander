@@ -2,13 +2,11 @@
 using System.Diagnostics;
 using Terminal.Gui;
 
-SvcUtils utils = new SvcUtils();
-
 Application.Init();
 Window win = new Window("Split View Commander")
 {
     X = 0,
-    Y = 1,
+    Y = 0,
     Width = Dim.Fill(),
     Height = Dim.Fill(),
 };
@@ -23,9 +21,9 @@ string currentRightDir = Directory.GetCurrentDirectory().ToString();
 
 string[] relativeDirectoryReferences = new string[] { ".." };
 string[] leftDirFileList = Directory.GetFileSystemEntries(currentLeftDir, "*", SearchOption.TopDirectoryOnly);
-string[] leftFiles = utils.ConcatArrays(relativeDirectoryReferences, leftDirFileList);
+string[] leftFiles = SvcUtils.ConcatArrays(relativeDirectoryReferences, leftDirFileList);
 string[] rightDirFileList = Directory.GetFileSystemEntries(currentLeftDir, "*", SearchOption.TopDirectoryOnly);
-string[] rightFiles = utils.ConcatArrays(relativeDirectoryReferences, rightDirFileList);
+string[] rightFiles = SvcUtils.ConcatArrays(relativeDirectoryReferences, rightDirFileList);
 
 ListView leftListView = new ListView(leftFiles){ Width = Dim.Percent(45), Height = Dim.Percent(45), X = Pos.Percent(0), Y = Pos.Percent(0), AllowsMarking = true, AllowsMultipleSelection = true };
 ListView rightListView = new ListView(rightFiles) { Width = Dim.Percent(45), Height = Dim.Percent(45), X = Pos.Percent(51), Y = Pos.Percent(0), AllowsMarking = true, AllowsMultipleSelection = true };
@@ -35,7 +33,7 @@ rightListView.OpenSelectedItem += RightListViewHandleOpenSelectedItem;
 void LeftListViewHandleOpenSelectedItem(ListViewItemEventArgs args)
 {
     string filePath = args.Value.ToString()!;
-    bool isDir = utils.IsDirectory(filePath);
+    bool isDir = SvcUtils.IsDirectory(filePath);
 
     // If dir - navigate into it
     if (isDir)
@@ -60,14 +58,14 @@ void LeftListViewHandleOpenSelectedItem(ListViewItemEventArgs args)
         Process.Start(startInfo);
     }
 
-    string[] dirsAndFiles = utils.ConcatArrays(relativeDirectoryReferences, Directory.EnumerateFileSystemEntries(currentLeftDir).ToArray());
+    string[] dirsAndFiles = SvcUtils.ConcatArrays(relativeDirectoryReferences, Directory.EnumerateFileSystemEntries(currentLeftDir).ToArray());
     
     leftListView.SetSource(dirsAndFiles);
 }
 void RightListViewHandleOpenSelectedItem(ListViewItemEventArgs args)
 {
     string filePath = args.Value.ToString()!;
-    bool isDir = utils.IsDirectory(filePath);
+    bool isDir = SvcUtils.IsDirectory(filePath);
 
     // If dir - navigate into it
     if (isDir)
@@ -92,7 +90,7 @@ void RightListViewHandleOpenSelectedItem(ListViewItemEventArgs args)
         Process.Start(startInfo);
     }
 
-    string[] dirsAndFiles = utils.ConcatArrays(relativeDirectoryReferences, Directory.EnumerateFileSystemEntries(currentRightDir).ToArray());
+    string[] dirsAndFiles = SvcUtils.ConcatArrays(relativeDirectoryReferences, Directory.EnumerateFileSystemEntries(currentRightDir).ToArray());
 
     rightListView.SetSource(dirsAndFiles);
 }

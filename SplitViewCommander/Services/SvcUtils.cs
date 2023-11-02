@@ -1,9 +1,7 @@
 ﻿namespace SplitViewCommander.Services
 {
-    public class SvcUtils
+    public static class SvcUtils
     {
-        public SvcUtils(){}
-
         /// <summary>
         /// Concatenates two arrays of the same generic type T.
         /// </summary>
@@ -11,7 +9,7 @@
         /// <param name="array1">First array to concatenate</param>
         /// <param name="array2">Seconde array to concatenate</param>
         /// <returns>Concatenated array of type T</returns>
-        public T[] ConcatArrays<T>(T[] array1, T[] array2)
+        public static T[] ConcatArrays<T>(T[] array1, T[] array2)
         {
             int totalLength = array1.Length + array2.Length;
             T[] result = new T[totalLength];
@@ -26,7 +24,7 @@
         /// Checks if a path represents a Directory
         /// </summary>
         /// <returns>True if directory.</returns>
-        public bool IsDirectory(string path)
+        public static bool IsDirectory(string path)
         {
             return File.GetAttributes(path).HasFlag(FileAttributes.Directory);
         }
