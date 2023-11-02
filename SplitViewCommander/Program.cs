@@ -100,22 +100,28 @@ void RightListViewHandleOpenSelectedItem(ListViewItemEventArgs args)
 win.Add(leftListView);
 win.Add(rightListView);
 
-Button f3Button = new Button(10, 25, "_F3 View", false);
+int buttonsYPos = 47;
+int btnPadLeft = 15;
+
+Button f3Button = new Button(10, buttonsYPos, "_F3 View", false);
 f3Button.CanFocus = false;
 
-Button f4Button = new Button(25, 25, "_F4 Edit", false);
+Button f4Button = new Button(25, buttonsYPos, "_F4 Edit", false);
 f4Button.CanFocus = false;
 
-Button f5Button = new Button(40, 25, "_F5 Copy", false);
+Button f5Button = new Button(40, buttonsYPos, "_F5 Copy", false);
 f5Button.CanFocus = false;
 
-Button f6Button = new Button(55, 25, "_F6 Move", false);
+Button f6Button = new Button(55, buttonsYPos, "_F6 Move", false);
 f6Button.CanFocus = false;
 
-Button f7Button = new Button(70, 25, "_F7 Dir", false);
+Button f7Button = new Button(70, buttonsYPos, "_F7 Dir", false);
 f7Button.CanFocus = false;
 
-Button f10Button = new Button(85, 25, "_F10 Quit", false);
+Button f8Button = new Button(85, buttonsYPos, "_F8 Del", false);
+f8Button.CanFocus = false;
+
+Button f10Button = new Button(100, buttonsYPos, "_F10 Quit", false);
 f10Button.CanFocus = false;
 
 win.Add(f3Button);
