@@ -10,11 +10,7 @@ Window win = new Window("Split View Commander")
     Width = Dim.Fill(),
     Height = Dim.Fill(),
 };
-MenuBar menu = new MenuBar(new MenuBarItem[] {
-            new MenuBarItem ( "_File", new MenuItem [] { new MenuItem ("_Quit", "", () => { Application.RequestStop(); }) }),
-            new MenuBarItem ( "_Mark", new MenuItem [] { new MenuItem ("_Quit", "", () => { Application.RequestStop(); }) }),
-            new MenuBarItem ( "_Options", new MenuItem [] { new MenuItem ("_Quit", "", () => { Application.RequestStop(); }) }),
-        });
+MenuBar menu = new SplitViewCommander.Elements.MenuBar().GetMenuBar();
 
 #region Directory Panels
 string currentLeftDir = @"C:\Users\Brian\Desktop";
