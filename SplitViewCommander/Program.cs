@@ -16,6 +16,7 @@ string[] leftDirFileList = Directory.GetFileSystemEntries(currentLeftDir, "*", S
 string[] leftFiles = SvcUtils.ConcatArrays(relativeDirectoryReferences, leftDirFileList);
 string[] rightDirFileList = Directory.GetFileSystemEntries(currentLeftDir, "*", SearchOption.TopDirectoryOnly);
 string[] rightFiles = SvcUtils.ConcatArrays(relativeDirectoryReferences, rightDirFileList);
+int buttonsYPos = 47;
 #endregion
 
 #region Init SVC
@@ -25,44 +26,20 @@ MenuBar menu = new SplitViewCommander.Elements.MenuBar().GetMenuBar();
 #endregion
 
 #region Directory Panels
-ListView leftListView = new SplitViewCommander.Elements.ListViews().GetListView(leftFiles, currentLeftDir, relativeDirectoryReferences, Pos.Percent(0), Pos.Percent(0));
-ListView rightListView = new SplitViewCommander.Elements.ListViews().GetListView(leftFiles, currentLeftDir, relativeDirectoryReferences, Pos.Percent(45), Pos.Percent(0));
-#endregion
+SplitViewCommander.Elements.ListViews listViews = new();
+ListView leftListView = listViews.GetListView(leftFiles, currentLeftDir, relativeDirectoryReferences, Pos.Percent(0), Pos.Percent(0));
+ListView rightListView = listViews.GetListView(leftFiles, currentLeftDir, relativeDirectoryReferences, Pos.Percent(45), Pos.Percent(0));
 
 win.Add(leftListView);
 win.Add(rightListView);
+#endregion
 
-#region F Buttons
-int buttonsYPos = 47;
-int btnPadLeft = 15;
-
-Button f3Button = new Button(10, buttonsYPos, "_F3 View", false);
-f3Button.CanFocus = false;
-
-Button f4Button = new Button(25, buttonsYPos, "_F4 Edit", false);
-f4Button.CanFocus = false;
-
-Button f5Button = new Button(40, buttonsYPos, "_F5 Copy", false);
-f5Button.CanFocus = false;
-
-Button f6Button = new Button(55, buttonsYPos, "_F6 Move", false);
-f6Button.CanFocus = false;
-
-Button f7Button = new Button(70, buttonsYPos, "_F7 Dir", false);
-f7Button.CanFocus = false;
-
-Button f8Button = new Button(85, buttonsYPos, "_F8 Del", false);
-f8Button.CanFocus = false;
-
-Button f10Button = new Button(100, buttonsYPos, "_F10 Quit", false);
-f10Button.CanFocus = false;
-
-win.Add(f3Button);
-win.Add(f4Button);
-win.Add(f5Button);
-win.Add(f6Button);
-win.Add(f7Button);
-win.Add(f10Button);
+#region Function Buttons
+List<Button> buttons = new SplitViewCommander.Elements.Buttons().GetButtons(buttonsYPos);
+foreach (Button button in buttons)
+{
+    win.Add(button);
+}
 #endregion
 
 Application.Top.KeyDown += OnKeyDown;
