@@ -1,14 +1,21 @@
 ﻿using SplitViewCommander.Services;
 using System.Diagnostics;
 using Terminal.Gui;
+using Microsoft.Extensions.Configuration;
+
+var configuration = new ConfigurationBuilder().AddJsonFile($"appsettings.json");
+var config = configuration.Build();
+
+#region Settings
+string currentLeftDir = config.GetSection("ConfigStrings:CurrentLeftDir").Value!;
+string currentRightDir = config.GetSection("ConfigStrings:CurrentRightDir").Value!;
+#endregion
 
 Application.Init();
 Window win = new SplitViewCommander.Elements.Windows().GetMainWindow();
 MenuBar menu = new SplitViewCommander.Elements.MenuBar().GetMenuBar();
 
 #region Directory Panels
-string currentLeftDir = @"C:\Users\Brian\Desktop";
-string currentRightDir = Directory.GetCurrentDirectory().ToString();
 
 string[] relativeDirectoryReferences = new string[] { ".." };
 string[] leftDirFileList = Directory.GetFileSystemEntries(currentLeftDir, "*", SearchOption.TopDirectoryOnly);
