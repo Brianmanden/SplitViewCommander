@@ -3,13 +3,7 @@ using System.Diagnostics;
 using Terminal.Gui;
 
 Application.Init();
-Window win = new Window("Split View Commander")
-{
-    X = 0,
-    Y = 0,
-    Width = Dim.Fill(),
-    Height = Dim.Fill(),
-};
+Window win = new SplitViewCommander.Elements.Windows().GetMainWindow();
 MenuBar menu = new SplitViewCommander.Elements.MenuBar().GetMenuBar();
 
 #region Directory Panels
