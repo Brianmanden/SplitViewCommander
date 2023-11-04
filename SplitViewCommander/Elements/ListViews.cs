@@ -6,7 +6,7 @@ namespace SplitViewCommander.Elements
 {
     public class ListViews : ListView
     {
-        private ListView _listView { get; set; }
+        private static List<ListView>? _listViews { get; set; } = new List<ListView>();
         private Dim _height { get; set; } = Dim.Percent(45);
         private Dim _width { get; set; } = Dim.Percent(45);
         private string _currentDir { get; set; } = "";
@@ -14,13 +14,21 @@ namespace SplitViewCommander.Elements
 
         private void HandleOpenSelectedItem(ListViewItemEventArgs args)
         {
-            string filePath = args.Value.ToString()!;
-            bool isDir = SvcUtils.IsDirectory(filePath);
+            ListView listView = _listViews!.Where(lv => lv.HasFocus == true).First();
+
+            if (listView == null)
+            {
+                throw new ArgumentException("No listview");
+            }
+
+            string folderPath = args.Value.ToString()!;
+
+            bool isDir = SvcUtils.IsDirectory(folderPath);
 
             // If dir - navigate into it
             if (isDir)
             {
-                if (".." == filePath)
+                if (".." == folderPath)
                 {
                     string? parentDir = Directory.GetParent(_currentDir)?.ToString();
                     if (parentDir is not null)
@@ -30,33 +38,45 @@ namespace SplitViewCommander.Elements
                 }
                 else
                 {
-                    _currentDir = filePath;
+                    _currentDir = folderPath;
                 }
             }
             // if not dir - assuming file and opening it
             else
             {
-                ProcessStartInfo startInfo = new ProcessStartInfo() { FileName = filePath, UseShellExecute = true };
+                ProcessStartInfo startInfo = new ProcessStartInfo() { FileName = folderPath, UseShellExecute = true };
                 Process.Start(startInfo);
             }
 
-            string[] dirsAndFiles = SvcUtils.ConcatArrays(_relativeDirectoryReferences, Directory.EnumerateFileSystemEntries(_currentDir).ToArray());
+            //TODO Check for access rights to folder
+            string[] targetDirList = Directory.EnumerateFileSystemEntries(_currentDir).ToArray();
 
-            _listView.SetSource(dirsAndFiles);
+            string[] newDirsAndFiles = SvcUtils.ConcatArrays(_relativeDirectoryReferences, targetDirList);
+            listView.SetSource(newDirsAndFiles);
         }
 
-        public ListView GetListView(string[] leftFiles, string currentDir, string[] relativeDirectoryReferences, Pos Xpos, Pos Ypos)
+        public ListView GetListView(string currentDir, string[] relativeDirectoryReferences, Pos Xpos, Pos Ypos, string id)
         {
             _currentDir ??= currentDir;
             _relativeDirectoryReferences ??= relativeDirectoryReferences;
-            _listView = new ListView(leftFiles) { Width = _width, Height = _height, X = Xpos, Y = Ypos, AllowsMarking = true, AllowsMultipleSelection = true };
+
+            ListView newListView = new ListView();
+            newListView.Id = id;
+            newListView.Width = _width;
+            newListView.Height = _height;
+            newListView.X = Xpos;
+            newListView.Y = Ypos;
+            newListView.CanFocus = true;
+            newListView.AllowsMarking = true;
+            newListView.AllowsMultipleSelection = true;
 
             string[] dirsAndFiles = SvcUtils.ConcatArrays(relativeDirectoryReferences, Directory.EnumerateFileSystemEntries(currentDir).ToArray());
+            newListView.SetSource(dirsAndFiles);
 
-            _listView.OpenSelectedItem += HandleOpenSelectedItem;
+            newListView.OpenSelectedItem += HandleOpenSelectedItem;
 
-            return _listView;
+            _listViews.Add(newListView);
+            return newListView;
         }
-
     }
 }

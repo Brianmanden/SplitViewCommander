@@ -1,5 +1,4 @@
-﻿using SplitViewCommander.Services;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Terminal.Gui;
 using Microsoft.Extensions.Configuration;
 
@@ -13,9 +12,7 @@ string currentLeftDir = config.GetSection("ConfigStrings:CurrentLeftDir").Value!
 string currentRightDir = config.GetSection("ConfigStrings:CurrentRightDir").Value!;
 string[] relativeDirectoryReferences = new string[] { ".." };
 string[] leftDirFileList = Directory.GetFileSystemEntries(currentLeftDir, "*", SearchOption.TopDirectoryOnly);
-string[] leftFiles = SvcUtils.ConcatArrays(relativeDirectoryReferences, leftDirFileList);
 string[] rightDirFileList = Directory.GetFileSystemEntries(currentLeftDir, "*", SearchOption.TopDirectoryOnly);
-string[] rightFiles = SvcUtils.ConcatArrays(relativeDirectoryReferences, rightDirFileList);
 int buttonsYPos = 47;
 #endregion
 
@@ -27,8 +24,8 @@ MenuBar menu = new SplitViewCommander.Elements.MenuBar().GetMenuBar();
 
 #region Directory Panels
 SplitViewCommander.Elements.ListViews listViews = new();
-ListView leftListView = listViews.GetListView(leftFiles, currentLeftDir, relativeDirectoryReferences, Pos.Percent(0), Pos.Percent(0));
-ListView rightListView = listViews.GetListView(leftFiles, currentLeftDir, relativeDirectoryReferences, Pos.Percent(45), Pos.Percent(0));
+ListView leftListView = listViews.GetListView(currentLeftDir, relativeDirectoryReferences, Pos.Percent(0), Pos.Percent(0), "leftView");
+ListView rightListView = listViews.GetListView(currentRightDir, relativeDirectoryReferences, Pos.Percent(45), Pos.Percent(0), "rightView");
 
 win.Add(leftListView);
 win.Add(rightListView);
