@@ -3,100 +3,36 @@ using System.Diagnostics;
 using Terminal.Gui;
 using Microsoft.Extensions.Configuration;
 
+#region Configuration
 var configuration = new ConfigurationBuilder().AddJsonFile($"appsettings.json");
 var config = configuration.Build();
+#endregion
 
 #region Settings
 string currentLeftDir = config.GetSection("ConfigStrings:CurrentLeftDir").Value!;
 string currentRightDir = config.GetSection("ConfigStrings:CurrentRightDir").Value!;
-#endregion
-
-Application.Init();
-Window win = new SplitViewCommander.Elements.Windows().GetMainWindow();
-MenuBar menu = new SplitViewCommander.Elements.MenuBar().GetMenuBar();
-
-#region Directory Panels
-
 string[] relativeDirectoryReferences = new string[] { ".." };
 string[] leftDirFileList = Directory.GetFileSystemEntries(currentLeftDir, "*", SearchOption.TopDirectoryOnly);
 string[] leftFiles = SvcUtils.ConcatArrays(relativeDirectoryReferences, leftDirFileList);
 string[] rightDirFileList = Directory.GetFileSystemEntries(currentLeftDir, "*", SearchOption.TopDirectoryOnly);
 string[] rightFiles = SvcUtils.ConcatArrays(relativeDirectoryReferences, rightDirFileList);
-
-ListView leftListView = new ListView(leftFiles) { Width = Dim.Percent(45), Height = Dim.Percent(45), X = Pos.Percent(0), Y = Pos.Percent(0), AllowsMarking = true, AllowsMultipleSelection = true };
-ListView rightListView = new ListView(rightFiles) { Width = Dim.Percent(45), Height = Dim.Percent(45), X = Pos.Percent(51), Y = Pos.Percent(0), AllowsMarking = true, AllowsMultipleSelection = true };
-leftListView.OpenSelectedItem += LeftListViewHandleOpenSelectedItem;
-rightListView.OpenSelectedItem += RightListViewHandleOpenSelectedItem;
 #endregion
 
-void LeftListViewHandleOpenSelectedItem(ListViewItemEventArgs args)
-{
-    string filePath = args.Value.ToString()!;
-    bool isDir = SvcUtils.IsDirectory(filePath);
+#region Init SVC
+Application.Init();
+Window win = new SplitViewCommander.Elements.Windows().GetMainWindow();
+MenuBar menu = new SplitViewCommander.Elements.MenuBar().GetMenuBar();
+#endregion
 
-    // If dir - navigate into it
-    if (isDir)
-    {
-        if (".." == filePath)
-        {
-            string? parentDir = Directory.GetParent(currentLeftDir)?.ToString();
-            if (parentDir is not null)
-            {
-                currentLeftDir = parentDir;
-            }
-        }
-        else
-        {
-            currentLeftDir = filePath;
-        }
-    }
-    // if not dir - assuming file and opening it
-    else
-    {
-        ProcessStartInfo startInfo = new ProcessStartInfo() { FileName = filePath, UseShellExecute = true };
-        Process.Start(startInfo);
-    }
-
-    string[] dirsAndFiles = SvcUtils.ConcatArrays(relativeDirectoryReferences, Directory.EnumerateFileSystemEntries(currentLeftDir).ToArray());
-    
-    leftListView.SetSource(dirsAndFiles);
-}
-void RightListViewHandleOpenSelectedItem(ListViewItemEventArgs args)
-{
-    string filePath = args.Value.ToString()!;
-    bool isDir = SvcUtils.IsDirectory(filePath);
-
-    // If dir - navigate into it
-    if (isDir)
-    {
-        if (".." == filePath)
-        {
-            string? parentDir = Directory.GetParent(currentRightDir)?.ToString();
-            if (parentDir is not null)
-            {
-                currentRightDir = parentDir;
-            }
-        }
-        else
-        {
-            currentRightDir = filePath;
-        }
-    }
-    // if not dir - assuming file and opening it
-    else
-    {
-        ProcessStartInfo startInfo = new ProcessStartInfo() { FileName = filePath, UseShellExecute = true };
-        Process.Start(startInfo);
-    }
-
-    string[] dirsAndFiles = SvcUtils.ConcatArrays(relativeDirectoryReferences, Directory.EnumerateFileSystemEntries(currentRightDir).ToArray());
-
-    rightListView.SetSource(dirsAndFiles);
-}
+#region Directory Panels
+ListView leftListView = new SplitViewCommander.Elements.ListViews().GetListView(leftFiles, currentLeftDir, relativeDirectoryReferences, Pos.Percent(0), Pos.Percent(0));
+ListView rightListView = new SplitViewCommander.Elements.ListViews().GetListView(leftFiles, currentLeftDir, relativeDirectoryReferences, Pos.Percent(45), Pos.Percent(0));
+#endregion
 
 win.Add(leftListView);
 win.Add(rightListView);
 
+#region F Buttons
 int buttonsYPos = 47;
 int btnPadLeft = 15;
 
@@ -127,6 +63,7 @@ win.Add(f5Button);
 win.Add(f6Button);
 win.Add(f7Button);
 win.Add(f10Button);
+#endregion
 
 Application.Top.KeyDown += OnKeyDown;
 void OnKeyDown(View.KeyEventEventArgs args)
@@ -138,7 +75,6 @@ void OnKeyDown(View.KeyEventEventArgs args)
         Application.RequestStop();
     }
 }
-
 
 // Add both menu and win in a single call
 Application.Top.Add(menu, win);
