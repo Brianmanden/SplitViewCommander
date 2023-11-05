@@ -2,10 +2,19 @@
 using Microsoft.Extensions.Configuration;
 using SplitViewCommander.Elements;
 using SplitViewCommander.Models;
+using Microsoft.Extensions.DependencyInjection;
+using SplitViewCommander.Services;
 
 #region Configuration
 var configuration = new ConfigurationBuilder().AddJsonFile($"appsettings.json");
 var config = configuration.Build();
+#endregion
+
+#region Services
+ServiceCollection services = new ServiceCollection();
+services.AddSingleton<FKeyActions>();
+ServiceProvider sp = services.BuildServiceProvider();
+FKeyActions functionButtonMethods = sp.GetService<FKeyActions>();
 #endregion
 
 #region Settings
@@ -15,6 +24,8 @@ string[] relativeDirectoryReferences = new string[] { ".." };
 string[] leftDirFileList = Directory.GetFileSystemEntries(currentLeftDir, "*", SearchOption.TopDirectoryOnly);
 string[] rightDirFileList = Directory.GetFileSystemEntries(currentLeftDir, "*", SearchOption.TopDirectoryOnly);
 int buttonsYPos = 47;
+int buttonsStartPosX = 5;
+int buttonsRightMargin = 15;
 #endregion
 
 #region Init SVC
@@ -33,7 +44,7 @@ win.Add(rightListView);
 #endregion
 
 #region Function Buttons
-List<FunctionKeyButton> buttons = new Buttons().GetButtons(buttonsYPos);
+List<FunctionKeyButton> buttons = new Buttons().GetButtons(functionButtonMethods, buttonsStartPosX, buttonsYPos, buttonsRightMargin);
 foreach (FunctionKeyButton button in buttons)
 {
     win.Add(button.Button);
@@ -43,8 +54,6 @@ foreach (FunctionKeyButton button in buttons)
 Application.Top.KeyDown += OnKeyDown;
 void OnKeyDown(View.KeyEventEventArgs args)
 {
-    //Debug.WriteLine($"{args.KeyEvent.Key} pressed");
-
     FunctionKeyButton functionKey = buttons.Where(btn => btn.Key! == args.KeyEvent.Key).FirstOrDefault();
     if (functionKey != null)
     {
