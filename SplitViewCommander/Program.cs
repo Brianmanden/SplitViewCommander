@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Terminal.Gui;
+﻿using Terminal.Gui;
 using Microsoft.Extensions.Configuration;
 using SplitViewCommander.Elements;
 using SplitViewCommander.Models;
@@ -20,12 +19,12 @@ int buttonsYPos = 47;
 
 #region Init SVC
 Application.Init();
-Window win = new SplitViewCommander.Elements.Windows().GetMainWindow();
+Window win = new Windows().GetMainWindow();
 Terminal.Gui.MenuBar menu = new SplitViewCommander.Elements.MenuBar().GetMenuBar();
 #endregion
 
 #region Directory Panels
-SplitViewCommander.Elements.ListViews listViews = new();
+ListViews listViews = new();
 ListView leftListView = listViews.GetListView(currentLeftDir, relativeDirectoryReferences, Pos.Percent(0), Pos.Percent(0), "leftView");
 ListView rightListView = listViews.GetListView(currentRightDir, relativeDirectoryReferences, Pos.Percent(45), Pos.Percent(0), "rightView");
 
@@ -34,7 +33,7 @@ win.Add(rightListView);
 #endregion
 
 #region Function Buttons
-List<FunctionKeyButton> buttons = new SplitViewCommander.Elements.Buttons().GetButtons(buttonsYPos);
+List<FunctionKeyButton> buttons = new Buttons().GetButtons(buttonsYPos);
 foreach (FunctionKeyButton button in buttons)
 {
     win.Add(button.Button);
