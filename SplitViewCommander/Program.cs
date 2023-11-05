@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using Terminal.Gui;
 using Microsoft.Extensions.Configuration;
+using SplitViewCommander.Elements;
+using SplitViewCommander.Models;
 
 #region Configuration
 var configuration = new ConfigurationBuilder().AddJsonFile($"appsettings.json");
@@ -19,7 +21,7 @@ int buttonsYPos = 47;
 #region Init SVC
 Application.Init();
 Window win = new SplitViewCommander.Elements.Windows().GetMainWindow();
-MenuBar menu = new SplitViewCommander.Elements.MenuBar().GetMenuBar();
+Terminal.Gui.MenuBar menu = new SplitViewCommander.Elements.MenuBar().GetMenuBar();
 #endregion
 
 #region Directory Panels
@@ -32,21 +34,22 @@ win.Add(rightListView);
 #endregion
 
 #region Function Buttons
-List<Button> buttons = new SplitViewCommander.Elements.Buttons().GetButtons(buttonsYPos);
-foreach (Button button in buttons)
+List<FunctionKeyButton> buttons = new SplitViewCommander.Elements.Buttons().GetButtons(buttonsYPos);
+foreach (FunctionKeyButton button in buttons)
 {
-    win.Add(button);
+    win.Add(button.Button);
 }
 #endregion
 
 Application.Top.KeyDown += OnKeyDown;
 void OnKeyDown(View.KeyEventEventArgs args)
 {
-    Debug.WriteLine($"{args.KeyEvent.Key} pressed");
+    //Debug.WriteLine($"{args.KeyEvent.Key} pressed");
 
-    if (args.KeyEvent.Key == Key.F10)
+    FunctionKeyButton functionKey = buttons.Where(btn => btn.Key! == args.KeyEvent.Key).FirstOrDefault();
+    if (functionKey != null)
     {
-        Application.RequestStop();
+        functionKey.ButtonAction.Invoke();
     }
 }
 
