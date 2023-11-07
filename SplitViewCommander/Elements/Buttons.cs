@@ -10,13 +10,13 @@ public class Buttons
     {
         List<FunctionKeyButton> buttons = new List<FunctionKeyButton>
         {
-            new FunctionKeyButton{ Key = Key.F3,    Button = new Button(0, buttonsYPos, "_F3 View", false),    ButtonAction = fKeyActions.GetAction(Key.F3) },
-            new FunctionKeyButton{ Key = Key.F4,    Button = new Button(0, buttonsYPos, "_F4 Edit", false),    ButtonAction = fKeyActions.GetAction(Key.F4) },
-            new FunctionKeyButton{ Key = Key.F5,    Button = new Button(0, buttonsYPos, "_F5 Copy", false),    ButtonAction = fKeyActions.GetAction(Key.F5) },
-            new FunctionKeyButton{ Key = Key.F6,    Button = new Button(0, buttonsYPos, "_F6 Move/Rename", false),    ButtonAction = fKeyActions.GetAction(Key.F6) },
-            new FunctionKeyButton{ Key = Key.F7,    Button = new Button(0, buttonsYPos, "_F7 Directory", false),     ButtonAction = fKeyActions.GetAction(Key.F7) },
-            new FunctionKeyButton{ Key = Key.F8,    Button = new Button(0, buttonsYPos, "_F8 Delete", false),     ButtonAction = fKeyActions.GetAction(Key.F8) },
-            new FunctionKeyButton{ Key = Key.F10,   Button = new Button(0, buttonsYPos, "_F10 Quit", false),   ButtonAction = fKeyActions.GetAction(Key.F10) },
+            new FunctionKeyButton{ Key = Key.F3,    Button = new Button(0, buttonsYPos, "_F3 View", false),         ButtonAction = fKeyActions.GetAction(Key.F3) },
+            new FunctionKeyButton{ Key = Key.F4,    Button = new Button(0, buttonsYPos, "_F4 Edit", false),         ButtonAction = fKeyActions.GetAction(Key.F4) },
+            new FunctionKeyButton{ Key = Key.F5,    Button = new Button(0, buttonsYPos, "_F5 Copy", false),         ButtonAction = fKeyActions.GetAction(Key.F5) },
+            new FunctionKeyButton{ Key = Key.F6,    Button = new Button(0, buttonsYPos, "_F6 Move/Rename", false),  ButtonAction = fKeyActions.GetAction(Key.F6) },
+            new FunctionKeyButton{ Key = Key.F7,    Button = new Button(0, buttonsYPos, "_F7 Directory", false),    ButtonAction = fKeyActions.GetAction(Key.F7) },
+            new FunctionKeyButton{ Key = Key.F8,    Button = new Button(0, buttonsYPos, "_F8 Delete", false),       ButtonAction = fKeyActions.GetAction(Key.F8) },
+            new FunctionKeyButton{ Key = Key.F10,   Button = new Button(0, buttonsYPos, "_F10 Quit", false),        ButtonAction = fKeyActions.GetAction(Key.F10) },
         };
 
         int nextXPos = 0;
