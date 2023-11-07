@@ -9,7 +9,7 @@ public class ListViews : ListView
     private static List<ListView>? _listViews { get; set; } = new List<ListView>();
     private Dim _height { get; set; } = Dim.Percent(45);
     private Dim _width { get; set; } = Dim.Percent(45);
-    private string _currentDir { get; set; } = "";
+    private string _currentDir { get; set; }
     private string[] _relativeDirectoryReferences { get; set; }
 
     private void HandleOpenSelectedItem(ListViewItemEventArgs args)
