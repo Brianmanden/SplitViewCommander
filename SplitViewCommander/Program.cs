@@ -38,9 +38,7 @@ Terminal.Gui.MenuBar menu = new SplitViewCommander.Elements.MenuBar().GetMenuBar
 ListViews listViews = new();
 ListView leftListView = listViews.GetListView(currentLeftDir, relativeDirectoryReferences, Pos.Percent(0), Pos.Percent(0), "leftView");
 ListView rightListView = listViews.GetListView(currentRightDir, relativeDirectoryReferences, Pos.Percent(45), Pos.Percent(0), "rightView");
-
-win.Add(leftListView);
-win.Add(rightListView);
+win.Add(leftListView, rightListView);
 #endregion
 
 #region Function Buttons
@@ -51,6 +49,27 @@ foreach (FunctionKeyButton button in buttons)
 }
 #endregion
 
+#region Info Fields
+TextField leftListviewInfoField = new TextField();
+leftListviewInfoField.Text = "test text";
+leftListviewInfoField.Width = Dim.Percent(43);
+leftListviewInfoField.Height = 1;
+leftListviewInfoField.X = Pos.Percent(0);
+leftListviewInfoField.Y = Pos.Percent(96);
+leftListviewInfoField.CanFocus = false;
+
+TextField rightListviewInfoField = new TextField();
+rightListviewInfoField.Text = "test text";
+rightListviewInfoField.Width = Dim.Percent(43);
+rightListviewInfoField.Height = 1;
+rightListviewInfoField.X = Pos.Percent(46);
+rightListviewInfoField.Y = Pos.Percent(96);
+rightListviewInfoField.CanFocus = false;
+
+win.Add(leftListviewInfoField, rightListviewInfoField);
+#endregion
+
+#region KeyHandler
 Application.Top.KeyDown += OnKeyDown;
 void OnKeyDown(View.KeyEventEventArgs args)
 {
@@ -60,6 +79,7 @@ void OnKeyDown(View.KeyEventEventArgs args)
         functionKey.ButtonAction.Invoke();
     }
 }
+#endregion
 
 // Add both menu and win in a single call
 Application.Top.Add(menu, win);
