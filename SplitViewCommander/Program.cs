@@ -50,22 +50,9 @@ foreach (FunctionKeyButton button in buttons)
 #endregion
 
 #region Info Fields
-TextField leftListviewInfoField = new TextField();
-leftListviewInfoField.Text = "test text";
-leftListviewInfoField.Width = Dim.Percent(43);
-leftListviewInfoField.Height = 1;
-leftListviewInfoField.X = Pos.Percent(0);
-leftListviewInfoField.Y = Pos.Percent(96);
-leftListviewInfoField.CanFocus = false;
-
-TextField rightListviewInfoField = new TextField();
-rightListviewInfoField.Text = "test text";
-rightListviewInfoField.Width = Dim.Percent(43);
-rightListviewInfoField.Height = 1;
-rightListviewInfoField.X = Pos.Percent(46);
-rightListviewInfoField.Y = Pos.Percent(96);
-rightListviewInfoField.CanFocus = false;
-
+InfoFields textFields = new();
+TextField leftListviewInfoField  = textFields.GetInfoField(Pos.Percent(1), Pos.Percent(96), "leftListviewInfoField");
+TextField rightListviewInfoField = textFields.GetInfoField(Pos.Percent(46), Pos.Percent(96), "rightListviewInfoField");
 win.Add(leftListviewInfoField, rightListviewInfoField);
 #endregion
 
