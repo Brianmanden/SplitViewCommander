@@ -4,7 +4,6 @@ using SplitViewCommander.Elements;
 using SplitViewCommander.Models;
 using Microsoft.Extensions.DependencyInjection;
 using SplitViewCommander.Services;
-using System.Diagnostics;
 
 #region Configuration
 var configuration = new ConfigurationBuilder().AddJsonFile($"appsettings.json");
@@ -80,7 +79,6 @@ listViews.SourceChanged += (sender, eventArgs) =>
 };
 #endregion
 
-// Add both menu and win in a single call
 Application.Top.Add(menu, win);
 Application.Run();
 Application.Shutdown();
