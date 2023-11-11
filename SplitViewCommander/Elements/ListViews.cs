@@ -1,4 +1,5 @@
-﻿using SplitViewCommander.Services;
+﻿using SplitViewCommander.Models;
+using SplitViewCommander.Services;
 using System.Diagnostics;
 using Terminal.Gui;
 
@@ -10,11 +11,13 @@ public class ListViews : ListView
     private Dim _height { get; set; } = Dim.Percent(95);
     private Dim _width { get; set; } = Dim.Percent(45);
     private string _currentDir { get; set; }
+    private string _currentListView {  get; set; }
     private string[] _relativeDirectoryReferences { get; set; }
 
     private void HandleOpenSelectedItem(ListViewItemEventArgs args)
     {
         ListView listView = _listViews!.Where(lv => lv.HasFocus == true).First();
+        _currentListView = listView.Id.ToString();
 
         if (listView == null)
         {
@@ -52,7 +55,15 @@ public class ListViews : ListView
         string[] targetDirList = Directory.EnumerateFileSystemEntries(_currentDir).ToArray();
 
         string[] newDirsAndFiles = SvcUtils.ConcatArrays(_relativeDirectoryReferences, targetDirList);
+        OnSourceChanged(_currentListView, _currentDir);
         listView.SetSource(newDirsAndFiles);
+    }
+
+    public event EventHandler<SourceChangedEventArgs>? SourceChanged;
+
+    public void OnSourceChanged(string id, string currentDir)
+    {
+        SourceChanged?.Invoke(this, new SourceChangedEventArgs{ ListViewId = id, Directory = currentDir });
     }
 
     public ListView GetListView(string currentDir, string[] relativeDirectoryReferences, Pos Xpos, Pos Ypos, string id)

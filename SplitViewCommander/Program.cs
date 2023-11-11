@@ -4,6 +4,7 @@ using SplitViewCommander.Elements;
 using SplitViewCommander.Models;
 using Microsoft.Extensions.DependencyInjection;
 using SplitViewCommander.Services;
+using System.Diagnostics;
 
 #region Configuration
 var configuration = new ConfigurationBuilder().AddJsonFile($"appsettings.json");
@@ -56,7 +57,7 @@ TextField rightListviewInfoField = textFields.GetInfoField(Pos.Percent(46), Pos.
 win.Add(leftListviewInfoField, rightListviewInfoField);
 #endregion
 
-#region KeyHandler
+#region EventHandlers
 Application.Top.KeyDown += OnKeyDown;
 void OnKeyDown(View.KeyEventEventArgs args)
 {
@@ -66,6 +67,17 @@ void OnKeyDown(View.KeyEventEventArgs args)
         functionKey.ButtonAction.Invoke();
     }
 }
+
+listViews.SourceChanged += (sender, eventArgs) =>
+{
+    if (eventArgs.ListViewId == "leftView")
+    {
+        leftListviewInfoField.Text = eventArgs.Directory;
+    }
+    else {
+        rightListviewInfoField.Text = eventArgs.Directory;
+    }
+};
 #endregion
 
 // Add both menu and win in a single call
