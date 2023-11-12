@@ -77,8 +77,24 @@ listViews.SourceChanged += (sender, eventArgs) =>
         rightListviewInfoField.Text = eventArgs.Directory;
     }
 };
+
+listViews.FocusChanged += (sender, eventArgs) =>
+{
+    if (eventArgs.ListViewId == "leftView")
+    {
+        leftListviewInfoField.ColorScheme = new ColorScheme { Focus = new Terminal.Gui.Attribute(Color.BrightYellow, Color.BrightBlue) };
+        rightListviewInfoField.ColorScheme = new ColorScheme { Focus = new Terminal.Gui.Attribute(Color.BrightYellow, Color.Blue) };
+    }
+    else
+    {
+        rightListviewInfoField.ColorScheme = new ColorScheme { Focus = new Terminal.Gui.Attribute(Color.BrightYellow, Color.BrightBlue) };
+        leftListviewInfoField.ColorScheme = new ColorScheme { Focus = new Terminal.Gui.Attribute(Color.BrightYellow, Color.Blue) };
+    }
+};
 #endregion
 
+#region Application
 Application.Top.Add(menu, win);
 Application.Run();
 Application.Shutdown();
+#endregion

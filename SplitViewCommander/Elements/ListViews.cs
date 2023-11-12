@@ -1,6 +1,7 @@
 ﻿using SplitViewCommander.Models;
 using SplitViewCommander.Services;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Terminal.Gui;
 
 namespace SplitViewCommander.Elements;
@@ -13,6 +14,10 @@ public class ListViews : ListView
     private string _currentDir { get; set; }
     private string _currentListView {  get; set; }
     private string[] _relativeDirectoryReferences { get; set; }
+
+    #region Event & Handlers
+    public event EventHandler<SourceChangedEventArgs>? SourceChanged;
+    public event EventHandler<FocusChangedEventArgs>? FocusChanged;
 
     private void HandleOpenSelectedItem(ListViewItemEventArgs args)
     {
@@ -58,12 +63,15 @@ public class ListViews : ListView
         OnSourceChanged(_currentListView, _currentDir);
         listView.SetSource(newDirsAndFiles);
     }
-
-    public event EventHandler<SourceChangedEventArgs>? SourceChanged;
-
     public void OnSourceChanged(string id, string currentDir)
     {
         SourceChanged?.Invoke(this, new SourceChangedEventArgs{ ListViewId = id, Directory = currentDir });
+    }
+    public void OnFocusChanged(string currentListView)
+    #endregion
+
+    {
+        FocusChanged?.Invoke(this, new FocusChangedEventArgs { ListViewId = currentListView });
     }
 
     public ListView GetListView(string currentDir, string[] relativeDirectoryReferences, Pos Xpos, Pos Ypos, string id)
@@ -85,6 +93,9 @@ public class ListViews : ListView
         newListView.SetSource(dirsAndFiles);
 
         newListView.OpenSelectedItem += HandleOpenSelectedItem;
+        newListView.Enter += (focusEventArgs) => {
+            OnFocusChanged(id);
+        };
 
         _listViews.Add(newListView);
         return newListView;
