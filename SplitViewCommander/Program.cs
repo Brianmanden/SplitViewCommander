@@ -36,8 +36,8 @@ Terminal.Gui.MenuBar menu = new SplitViewCommander.Elements.MenuBar().GetMenuBar
 
 #region Directory Panels
 ListViews listViews = new();
-ListView leftListView = listViews.GetListView(currentLeftDir, relativeDirectoryReferences, Pos.Percent(0), Pos.Percent(4), "leftView");
-ListView rightListView = listViews.GetListView(currentRightDir, relativeDirectoryReferences, Pos.Percent(46), Pos.Percent(4), "rightView");
+ListView leftListView = listViews.GetListView(currentLeftDir, relativeDirectoryReferences, Pos.Percent(0), Pos.Percent(5), "leftView");
+ListView rightListView = listViews.GetListView(currentRightDir, relativeDirectoryReferences, Pos.Percent(46), Pos.Percent(5), "rightView");
 win.Add(leftListView, rightListView);
 #endregion
 
