@@ -5,7 +5,7 @@ namespace SplitViewCommander.Elements
     public class InfoFields : TextField
     {
         private Dim _height { get; } = Dim.Percent(95);
-        private Dim _width { get; } = Dim.Percent(45);
+        private Dim _width { get; } = Dim.Percent(44);
 
         public TextField GetInfoField(Pos XPos, Pos YPos, string id) {
             TextField infoField = new TextField();

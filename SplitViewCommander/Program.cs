@@ -36,8 +36,8 @@ Terminal.Gui.MenuBar menu = new SplitViewCommander.Elements.MenuBar().GetMenuBar
 
 #region Directory Panels
 ListViews listViews = new();
-ListView leftListView = listViews.GetListView(currentLeftDir, relativeDirectoryReferences, Pos.Percent(0), Pos.Percent(0), "leftView");
-ListView rightListView = listViews.GetListView(currentRightDir, relativeDirectoryReferences, Pos.Percent(45), Pos.Percent(0), "rightView");
+ListView leftListView = listViews.GetListView(currentLeftDir, relativeDirectoryReferences, Pos.Percent(0), Pos.Percent(4), "leftView");
+ListView rightListView = listViews.GetListView(currentRightDir, relativeDirectoryReferences, Pos.Percent(46), Pos.Percent(4), "rightView");
 win.Add(leftListView, rightListView);
 #endregion
 
@@ -51,8 +51,8 @@ foreach (FunctionKeyButton button in buttons)
 
 #region Info Fields
 InfoFields textFields = new();
-TextField leftListviewInfoField  = textFields.GetInfoField(Pos.Percent(1), Pos.Percent(96), "leftListviewInfoField");
-TextField rightListviewInfoField = textFields.GetInfoField(Pos.Percent(46), Pos.Percent(96), "rightListviewInfoField");
+TextField leftListviewInfoField  = textFields.GetInfoField(Pos.Percent(1), Pos.Percent(0), "leftListviewInfoField");
+TextField rightListviewInfoField = textFields.GetInfoField(Pos.Percent(47), Pos.Percent(0), "rightListviewInfoField");
 win.Add(leftListviewInfoField, rightListviewInfoField);
 #endregion
 
