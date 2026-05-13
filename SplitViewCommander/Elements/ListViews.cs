@@ -31,27 +31,32 @@ public class ListViews : ListView
         return name;
     }
 
-    private string GetFullPathFromFormatted(string formatted, string currentDir)
+    public string GetFullPathFromFormatted(string formatted, string currentDir)
     {
         if (formatted == "..") return "..";
-        
+
         string name = formatted;
         if (formatted.StartsWith("/"))
         {
             name = formatted.Substring(1);
         }
-        
+
         return Path.Combine(currentDir, name);
     }
 
     public string GetActiveDirectory()
     {
-        var activeListView = _listViews?.FirstOrDefault(lv => lv.HasFocus);
+        var activeListView = GetActiveListView();
         if (activeListView != null && _currentDirs.TryGetValue(activeListView.Id.ToString(), out string? dir))
         {
             return dir;
         }
         return string.Empty;
+    }
+
+    public ListView? GetActiveListView()
+    {
+        return _listViews?.FirstOrDefault(lv => lv.HasFocus);
     }
 
     public void RefreshActiveListView()

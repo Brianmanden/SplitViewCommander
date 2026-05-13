@@ -8,6 +8,7 @@ namespace SplitViewCommander.Services
     public class FKeyActions
     {
         private readonly ListViews _listViews;
+        private readonly string[] _textExtensions = { ".txt", ".md", ".cs", ".json", ".xml", ".config", ".csproj", ".sln", ".js", ".ts", ".html", ".css", ".py" };
 
         public FKeyActions(ListViews listViews)
         {
@@ -17,7 +18,7 @@ namespace SplitViewCommander.Services
         public Action GetAction(Key functionKey)
         {
             var actions = new List<KeyValuePair<Key, Action>>(){
-                new KeyValuePair<Key, Action>(Key.F3, () => { Debug.WriteLine("F3"); }),
+                new KeyValuePair<Key, Action>(Key.F3, () => { ViewFile(); }),
                 new KeyValuePair<Key, Action>(Key.F4, () => { Debug.WriteLine("F4"); }),
                 new KeyValuePair<Key, Action>(Key.F5, () => { Debug.WriteLine("F5"); }),
                 new KeyValuePair<Key, Action>(Key.F6, () => { Debug.WriteLine("F6"); }),
@@ -31,6 +32,34 @@ namespace SplitViewCommander.Services
 
             Action functionAction = actions.Where(k => k.Key == functionKey).First().Value;
             return functionAction;
+        }
+
+        private void ViewFile()
+        {
+            string activeDir = _listViews.GetActiveDirectory();
+            var activeListView = _listViews.GetActiveListView();
+            
+            if (activeListView != null && activeListView.SelectedItem >= 0)
+            {
+                string selectedItem = activeListView.Source.ToList()[activeListView.SelectedItem].ToString()!;
+                string fullPath = _listViews.GetFullPathFromFormatted(selectedItem, activeDir);
+
+                if (fullPath == ".." || SvcUtils.IsDirectory(fullPath)) return;
+
+                if (File.Exists(fullPath))
+                {
+                    string ext = Path.GetExtension(fullPath).ToLower();
+                    if (_textExtensions.Contains(ext))
+                    {
+                        new TextViewer().Show($"Viewing: {Path.GetFileName(fullPath)}", fullPath);
+                    }
+                    else
+                    {
+                        ProcessStartInfo startInfo = new ProcessStartInfo() { FileName = fullPath, UseShellExecute = true };
+                        Process.Start(startInfo);
+                    }
+                }
+            }
         }
 
         private void CreateDirectory()
