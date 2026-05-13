@@ -1,4 +1,4 @@
-﻿using SplitViewCommander.Models;
+using SplitViewCommander.Models;
 using SplitViewCommander.Services;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -18,6 +18,32 @@ public class ListViews : ListView
     public event EventHandler<SourceChangedEventArgs>? SourceChanged;
     public event EventHandler<FocusChangedEventArgs>? FocusChanged;
 
+    private string FormatFileSystemEntry(string path)
+    {
+        if (path == "..") return "..";
+        string name = Path.GetFileName(path);
+        if (string.IsNullOrEmpty(name)) name = path; // Handle root drives
+
+        if (SvcUtils.IsDirectory(path))
+        {
+            return $"/{name}";
+        }
+        return name;
+    }
+
+    private string GetFullPathFromFormatted(string formatted, string currentDir)
+    {
+        if (formatted == "..") return "..";
+        
+        string name = formatted;
+        if (formatted.StartsWith("/"))
+        {
+            name = formatted.Substring(1);
+        }
+        
+        return Path.Combine(currentDir, name);
+    }
+
     public string GetActiveDirectory()
     {
         var activeListView = _listViews?.FirstOrDefault(lv => lv.HasFocus);
@@ -33,11 +59,28 @@ public class ListViews : ListView
         var activeListView = _listViews?.FirstOrDefault(lv => lv.HasFocus);
         if (activeListView != null)
         {
-            string currentDir = _currentDirs[activeListView.Id.ToString()];
-            string[] targetDirList = Directory.EnumerateFileSystemEntries(currentDir).ToArray();
-            string[] newDirsAndFiles = SvcUtils.ConcatArrays(_relativeDirectoryReferences, targetDirList);
-            activeListView.SetSource(newDirsAndFiles);
+            string listViewId = activeListView.Id.ToString();
+            string currentDir = _currentDirs[listViewId];
+            UpdateListViewSource(activeListView, currentDir);
         }
+    }
+
+    private void UpdateListViewSource(ListView listView, string directory)
+    {
+        string[] targetDirList = Directory.EnumerateFileSystemEntries(directory).ToArray();
+        List<string> formattedList = new List<string>();
+        
+        foreach (var rel in _relativeDirectoryReferences)
+        {
+            formattedList.Add(rel);
+        }
+
+        foreach (var entry in targetDirList)
+        {
+            formattedList.Add(FormatFileSystemEntry(entry));
+        }
+
+        listView.SetSource(formattedList);
     }
 
     private void HandleOpenSelectedItem(ListViewItemEventArgs args)
@@ -51,43 +94,33 @@ public class ListViews : ListView
             throw new ArgumentException("No listview");
         }
 
-        string folderPath = args.Value.ToString()!;
+        string selectedValue = args.Value.ToString()!;
+        string fullPath = GetFullPathFromFormatted(selectedValue, currentDir);
 
-        bool isDir = SvcUtils.IsDirectory(folderPath);
-
-        // If dir - navigate into it
-        if (isDir)
+        if (fullPath == "..")
         {
-            if (".." == folderPath)
+            string? parentDir = Directory.GetParent(currentDir)?.ToString();
+            if (parentDir is not null)
             {
-                string? parentDir = Directory.GetParent(currentDir)?.ToString();
-                if (parentDir is not null)
-                {
-                    currentDir = parentDir;
-                }
-            }
-            else
-            {
-                currentDir = folderPath;
+                currentDir = parentDir;
             }
         }
-        // if not dir - assuming file and opening it
+        else if (SvcUtils.IsDirectory(fullPath))
+        {
+            currentDir = fullPath;
+        }
         else
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo() { FileName = folderPath, UseShellExecute = true };
+            ProcessStartInfo startInfo = new ProcessStartInfo() { FileName = fullPath, UseShellExecute = true };
             Process.Start(startInfo);
-            return; // Don't refresh source if we just opened a file
+            return;
         }
 
         _currentDirs[listViewId] = currentDir;
-
-        //TODO Check for access rights to folder
-        string[] targetDirList = Directory.EnumerateFileSystemEntries(currentDir).ToArray();
-
-        string[] newDirsAndFiles = SvcUtils.ConcatArrays(_relativeDirectoryReferences, targetDirList);
+        UpdateListViewSource(listView, currentDir);
         OnSourceChanged(listViewId, currentDir);
-        listView.SetSource(newDirsAndFiles);
     }
+
     public void OnSourceChanged(string id, string currentDir)
     {
         SourceChanged?.Invoke(this, new SourceChangedEventArgs{ ListViewId = id, Directory = currentDir });
@@ -114,8 +147,7 @@ public class ListViews : ListView
         newListView.AllowsMarking = true;
         newListView.AllowsMultipleSelection = true;
 
-        string[] dirsAndFiles = SvcUtils.ConcatArrays(relativeDirectoryReferences, Directory.EnumerateFileSystemEntries(currentDir).ToArray());
-        newListView.SetSource(dirsAndFiles);
+        UpdateListViewSource(newListView, currentDir);
 
         newListView.OpenSelectedItem += HandleOpenSelectedItem;
         newListView.Enter += (focusEventArgs) => {
