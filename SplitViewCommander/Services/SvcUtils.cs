@@ -28,5 +28,15 @@
         {
             return File.GetAttributes(path).HasFlag(FileAttributes.Directory);
         }
+
+        /// <summary>
+        /// Validates if a folder name contains any invalid characters.
+        /// </summary>
+        public static bool IsValidFolderName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name)) return false;
+            char[] invalidChars = Path.GetInvalidFileNameChars();
+            return name.IndexOfAny(invalidChars) < 0;
+        }
     }
 }

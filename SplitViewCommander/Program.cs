@@ -10,8 +10,13 @@ var configuration = new ConfigurationBuilder().AddJsonFile($"appsettings.json");
 var config = configuration.Build();
 #endregion
 
+#region Directory Panels
+ListViews listViews = new();
+#endregion
+
 #region Services
 ServiceCollection services = new ServiceCollection();
+services.AddSingleton(listViews);
 services.AddSingleton<FKeyActions>();
 ServiceProvider sp = services.BuildServiceProvider();
 FKeyActions functionButtonMethods = sp.GetService<FKeyActions>();
@@ -41,8 +46,7 @@ TextField rightListviewInfoField = textFields.GetInfoField(Pos.Percent(47), Pos.
 win.Add(leftListviewInfoField, rightListviewInfoField);
 #endregion
 
-#region Directory Panels
-ListViews listViews = new();
+#region Directory Panels (Actual Setup)
 ListView leftListView = listViews.GetListView(currentLeftDir, relativeDirectoryReferences, Pos.Percent(0), Pos.Percent(5), "leftView");
 ListView rightListView = listViews.GetListView(currentRightDir, relativeDirectoryReferences, Pos.Percent(46), Pos.Percent(5), "rightView");
 win.Add(leftListView, rightListView);
